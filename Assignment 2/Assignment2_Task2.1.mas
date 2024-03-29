@@ -1,0 +1,51 @@
+﻿////////////////////////////////////////////////////////////////////////
+// Template for assignment 2 - Strings - Task 2.1						
+//																		
+// Your assignment submission needs to be based on this template.		
+//																		
+// Carefully read the instructions.										
+//																		
+// This template is only for Task 2.1 and does not include				
+// any subroutines.														
+//																		
+// Make sure all code is your own, and don't share any code				
+// or code fragments with other students.								
+//																		
+////////////////////////////////////////////////////////////////////////
+// Task 2.1: Print														
+////////////////////////////////////////////////////////////////////////
+
+/ ... insert your code here
+		Load CurrentCharacterADR 	// load address of TehJiaXuan
+Loop,	Store temp 					//store address to temp
+		LoadI temp					//load words by using LoadI
+		Skipcond 400 				//Halt if is 0
+		Jump Cont
+		Jump Done
+
+Cont,	Output
+		Load temp 					//add one to address so that it jumps to next word
+        Add One
+        Store temp
+        Jump Loop
+
+Done, Halt
+
+
+CurrentCharacterADR, ADR NametobePrinted
+One, DEC 1
+temp, DEC 0
+
+            
+/ ... insert name to be printed using label NametobePrinted
+NametobePrinted,HEX 54
+				HEX 65
+            	HEX 68
+            	HEX 4A
+            	HEX 69
+            	HEX 61
+            	HEX 58
+            	HEX 75
+            	HEX 61
+            	HEX 6E
+            	HEX 0

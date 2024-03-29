@@ -1,0 +1,239 @@
+﻿////////////////////////////////////////////////////////////////////////
+// Template for assignment 2 - Strings - Tasks from 2.2 to 2.6			
+//																		
+// Your assignment submission needs to be based on this template.		
+//																		
+// Carefully read the instructions.										
+//																		
+// You need to complete the subroutine and test the subroutine			
+// in the main program.													
+//																		
+// Make sure all code is your own, and don't share any code				
+// or code fragments with other students.								
+//																		
+////////////////////////////////////////////////////////////////////////
+// Code for your main program to call the subroutine					
+////////////////////////////////////////////////////////////////////////
+
+/ Test case for Task 2.2
+/ ... add code to call the soubroutines for the particular task
+Jns subPrintString
+
+
+/ Test case for Task 2.3
+/ ... add code to call the soubroutines for the particular task
+/Jns subInputString
+
+/ Test case for Task 2.4
+/ ... add code to call the soubroutines for the particular task
+
+/Jns subInputString
+/Jns subToLower
+/Load StringAddress
+/Store CurrentCharacterADR
+/Jns subPrintString
+
+
+/ Test case for Task 2.5
+/ ... add code to call the soubroutines for the particular task
+/Jns subInputString
+/JnS subROT13
+/Load StringAddress
+/Store CurrentCharacterADR
+/Jns subPrintString
+
+/ Test case for Task 2.6
+/Jns Encode_ROT13
+
+
+/ Finish execution
+Halt
+
+/ Location of Input string to be printed
+StringAddress,	HEX 200	/ This is the starting address of the string
+				
+
+////////////////////////////////////////////////////////////////////////
+// Task 2.2 - Subroutine for printing strings							
+////////////////////////////////////////////////////////////////////////
+
+subPrintString,	HEX 000	/ subroutine start
+/ ... add subroutine code for string output
+				
+
+Loop, 			LoadI CurrentCharacterADR	/in subroutine load words with pointer
+				Skipcond 400				/if is 0 then jump back if not continue
+                Jump Cont
+                Load NextLine				/output next line so it wont at the same line
+				Output						/for each string
+                JumpI subPrintString
+
+Cont,	Output								/output and plus one to current character address
+		Load CurrentCharacterADR			/jump back 
+		Add One
+		Store CurrentCharacterADR
+		Jump Loop
+
+NextLine, HEX A
+One, DEC 1
+temp, DEC 0
+
+CurrentCharacterADR, ADR NameToBePrint
+NameToBePrint,			HEX 54
+						HEX 65
+	           			HEX 68
+            			HEX 4A
+            			HEX 69
+            			HEX 61
+            			HEX 58
+	           			HEX 75
+            			HEX 61
+            			HEX 6E
+            			HEX 0
+
+////////////////////////////////////////////////////////////////////////
+// Task 2.3 - Subroutine for string input								
+////////////////////////////////////////////////////////////////////////
+
+subInputString,	HEX 000	/ subroutine start
+/ ... add subroutine code for string input
+                Load StringAddress
+				Store tempInput
+                
+LoopInput,		Input						/ask for input if is 0 then jump back
+                Skipcond 400				/if not continue
+                Jump inputCont
+                						
+                StoreI tempInput			/store 0 
+                JumpI subInputString
+	
+	    		
+inputCont,		StoreI tempInput			/store value to the Address that held by StringAddress
+				Load tempInput				/add one to address in StringAddress so that it points to next address
+				Add One
+                Store tempInput
+				Jump LoopInput
+                
+tempInput, HEX 0
+////////////////////////////////////////////////////////////////////////
+// Task 2.4 - Subroutine to convert to lower case						
+////////////////////////////////////////////////////////////////////////
+
+subToLower,	HEX 000		/ subroutine start
+/ ... add subroutine code to convert stored string to lower case
+			Load StringAddress
+			Store TempLower
+            
+LoopToLower,LoadI TempLower /load character from input load value, if is 0 then jump back
+            Skipcond 400		/if not continue loop
+			Jump LowerCont
+			JumpI subToLower
+
+
+LowerCont,	Subt UpperBound		/minus upperbound if is negative then there is a possibility 
+            Skipcond 000		/it is a uppercase letter then jump to check
+            Jump nextNum
+            					
+			/check for lowerbound
+           	LoadI TempLower	/minus lowerbound if is positive then it is uppercase
+			Subt LowerBound		/then Jump to change it to lowercase
+            Skipcond 800		/if is not positive then it is not uppercase then jump to next character
+            Jump nextNum
+			
+            /Switch to lowercase
+            LoadI TempLower		/load the uppercase character
+			Add diff			/add 20 to change it to lowercase
+			StoreI TempLower	/store back to that address
+			Jump nextNum		/jump to nextNum
+            
+nextNum,	Load TempLower		/load string address and add one so that it points to next address
+			Add One
+			Store TempLower
+			Jump LoopToLower
+			JumpI subToLower
+
+OriginalAddress, HEX 200
+TempLower, HEX 0
+UpperBound, HEX 5B
+LowerBound, HEX 40
+diff, HEX 20
+////////////////////////////////////////////////////////////////////////
+// Task 2.5 - Subroutine for ROT13										
+////////////////////////////////////////////////////////////////////////
+
+subROT13,	HEX 000		/ subroutine start
+/ ... add subroutine code to encode stored string with ROT13
+			Load StringAddress
+			Store TempROT13
+            
+LoopROT13,	LoadI TempROT13		/check 0, if is 0 then jump out
+			Skipcond 400
+            Jump ContROT13
+            JumpI subROT13
+
+ContROT13,	Subt LowerUpperBound	/check within a to z 
+			Skipcond 000			/minus upper bound if is negative then it may be a to z char
+            Jump NextChar	
+            						/jump next check
+		 	LoadI TempROT13		/minus lower bound if is positive then it is a to z char
+			Subt LowerLowerBound	
+			Skipcond 800
+            Jump NextChar
+            						/then jump to next check
+			LoadI TempROT13			/check is it a to n or n to z
+			Subt MiddleChar			/subt Middle char 
+			Skipcond 000			
+			Jump UpperLayer			/if is positive then it is n to z
+            
+            						/if is negative then it is a to n
+            LoadI TempROT13			/a to n
+			Add FurtherChar			/add 13 to get corresponding char
+			StoreI TempROT13		/jump to next char
+			Jump NextChar
+                
+UpperLayer, 	LoadI TempROT13		/n to z
+				Subt FurtherChar	/subt 13 to get corresponding char
+				StoreI TempROT13	/then jump to next char
+				Jump NextChar
+            
+NextChar,	Load TempROT13		/load pointer and add one to point to the next address
+			Add One
+            Store TempROT13
+			Jump LoopROT13
+
+
+FurtherChar, DEC 13
+MiddleChar, HEX 6E
+LowerLowerBound, HEX 60
+LowerUpperBound, HEX 7B
+TempROT13, HEX 0 
+
+////////////////////////////////////////////////////////////////////////
+// Task 2.6 - Nested subroutine to encode a string with ROT13			
+////////////////////////////////////////////////////////////////////////
+
+Encode_ROT13,	HEX 000		/ subroutine start
+				Jns subInputString
+                Load StringAddress
+				Store CurrentCharacterADR
+				Jns subPrintString
+                
+				Jns subToLower
+                Load StringAddress
+				Store CurrentCharacterADR
+				Jns subPrintString
+                
+				Jns subROT13
+                Load StringAddress
+				Store CurrentCharacterADR
+				Jns subPrintString
+                JumpI Encode_ROT13
+
+
+/ ... add subroutine code to call all previous subroutines to:
+/ 1. Prompt input string and store in memory
+/ 2. Output the stored string
+/ 3. Convert the stored string to lowercase and store in memory
+/ 4. Output the converted string
+/ 5. Encode the converted string with ROT13 and store in memory
+/ 6. Output the encoded string
